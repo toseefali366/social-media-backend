@@ -7,28 +7,22 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Friend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long friendId;
-
+    private Long id;
     @CreationTimestamp
-    @DateTimeFormat
     private LocalDateTime createdAt;
-
     @Enumerated(EnumType.STRING)
     private Status status;
     @ManyToOne
-    private User user1;
-
+    private User sender;
     @ManyToOne
-    private User user2;
-
-
+    private User receiver;
 }

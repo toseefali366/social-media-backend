@@ -12,46 +12,57 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String bio;
-    @Column(nullable = false)
-    private String firstName;
-    @Column(nullable = false)
-    private String lastName;
-    @Column(nullable = false, unique = true)
-    private String userName;
-    @Column(nullable = false, unique = true)
-    private String email;
-    @Column(unique = true)
-    private String phoneNumber;
 
-    private String location;
-    @Column(nullable = false)
-    private String password;
+    private String bio;
+
     @Enumerated(EnumType.STRING)
     private Country country;
+
+    private String coverPictureUrl;
+
     private LocalDate dob;
 
-    private Boolean isVerified;
-    @CreationTimestamp
-    @DateTimeFormat
-    private LocalDateTime signUpDate;
-    @Enumerated(EnumType.STRING)
-    private PrivacySetting privacySetting;
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String firstName;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private String coverPictureUrl;
+    private Boolean isVerified;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    private String location;
+
+    @Column(nullable = false)
+    private String password;
+
+    private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    private PrivacySetting privacySetting;
+
     private String profilePictureUrl;
 
+    @CreationTimestamp
+    private LocalDateTime signUpDate;
 
+    @Column(unique = true, nullable = false)
+    private String userName;
 }

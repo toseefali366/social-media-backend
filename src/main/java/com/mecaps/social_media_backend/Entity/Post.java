@@ -11,23 +11,18 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postId;
-
+    private Long id;
     @CreationTimestamp
-    @DateTimeFormat
     private LocalDateTime createdAt;
-
     private String text;
-
     @Enumerated(EnumType.STRING)
-    private Visibility visibility;
+    private Visibility visibility ;
     @ManyToOne
     private User user;
-
 }

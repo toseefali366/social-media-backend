@@ -1,10 +1,7 @@
 package com.mecaps.social_media_backend.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -13,22 +10,19 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long commentId;
+    private Long id;
     @CreationTimestamp
     @DateTimeFormat
     private LocalDateTime createdAt;
     private String text;
-
     @ManyToOne
-    @JoinColumn(name = "postId")
-    private Post Post;
-
-    @ManyToOne
-    @JoinColumn(name = "idd")
     private User user;
+    @ManyToOne
+    private Post post;
 }

@@ -7,21 +7,17 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class PostContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long postContentId;
-
+    private Long id;
     private String contentData;
     @Enumerated(EnumType.STRING)
     private ContentType contentType;
-
     private Long position;
     @ManyToOne
     private Post post;
-
-
 }

@@ -13,20 +13,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long chatMessageId;
-
+    private Long id;
     private String content;
     @CreationTimestamp
     @DateTimeFormat
-    private LocalDateTime timestamp;
-
-    @ManyToOne
-    private User receiver;
-
+    private LocalDateTime createdAt;
     @ManyToOne
     private User sender;
+    @ManyToOne
+    private User receiver;
 
 }
