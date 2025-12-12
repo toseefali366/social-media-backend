@@ -18,7 +18,6 @@ public class UserMapper {
                 .lastName(userRequest.getLastName())
                 .location(userRequest.getLocation())
                 .gender(userRequest.getGender())
-                .isVerified(userRequest.getIsVerified())
                 .phoneNumber(userRequest.getPhoneNumber())
                 .privacySetting(userRequest.getPrivacySetting())
                 .country(userRequest.getCountry())

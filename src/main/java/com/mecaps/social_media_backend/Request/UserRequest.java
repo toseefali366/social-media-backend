@@ -19,7 +19,6 @@ public class UserRequest {
     private String email;
     private String firstName;
     private Gender gender;
-    private Boolean isVerified;
     private String lastName;
     private String location;
     private String password;
