@@ -31,7 +31,8 @@ public class SecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/create").permitAll()   // allow signup
+                        .requestMatchers("/user/create").permitAll()
+                        .requestMatchers("/auth/login").permitAll()// allow signup
                         .anyRequest().authenticated()                  // everything else requires login
                 );
 
@@ -41,16 +42,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    public MultipartConfigElement multipartConfigElement() {
-//        MultipartConfigFactory factory = new MultipartConfigFactory();
-//
-//        factory.setMaxFileSize(DataSize.ofMegabytes(50));
-//        factory.setMaxRequestSize(DataSize.ofMegabytes(100));
-//
-//
-//        return factory.createMultipartConfig();
-//    }
 
     }
 
