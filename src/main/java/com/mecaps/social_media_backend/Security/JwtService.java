@@ -1,5 +1,6 @@
 package com.mecaps.social_media_backend.Security;
 
+import com.mecaps.social_media_backend.Entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -16,28 +17,29 @@ private SecretKey getSecretKey(){
     return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 };
 
-public String generateAccessToken(String email){
+public String generateAccessToken(User user){
     return Jwts.builder()
-            .subject(email)
+            .subject(user.getEmail())
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .signWith(getSecretKey())
             .compact();
 }
+    public Claims extractAllClaims(String token){
+        return Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
 
-public String extractEmail(String token){
-return extractAllClaims(token).getSubject();
+       public String extractEmail(String token){
+            return extractAllClaims(token).getSubject();
 }
-public boolean isValidateToken(String token){
-    Claims claims = extractAllClaims(token);
-    return claims.getExpiration().after(new Date());
+       public boolean isTokenValid(String token){
+           Claims claims = extractAllClaims(token);
+           return claims.getExpiration().after(new Date());
 }
 
-public Claims extractAllClaims(String token){
-    return Jwts.parser()
-            .verifyWith(getSecretKey())
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
-}
+
 }
