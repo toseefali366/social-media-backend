@@ -1,18 +1,19 @@
 package com.mecaps.social_media_backend.Config;
 
 import com.mecaps.social_media_backend.Security.JwtAuthFilter;
-import jakarta.servlet.MultipartConfigElement;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.util.unit.DataSize;
 
 
 @Configuration
@@ -29,19 +30,42 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/create").permitAll()
-                        .requestMatchers("/auth/login").permitAll()// allow signup
-                        .anyRequest().authenticated()                  // everything else requires login
-                );
+        http
+                .csrf(AbstractHttpConfigurer::disable)
 
-        // Add JWT filter
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests(auth -> auth
+                        // ✅ Public APIs (NO JWT REQUIRED)
+                        .requestMatchers(
+                                "/user/create",
+                                "/auth/login",
+                                "/redis-auth/**"     // forgot-password, verify-otp, reset-password
+                        ).permitAll()
+
+                        // 🔒 Everything else requires JWT
+                        .anyRequest().authenticated()
+                )
+
+                // Stateless session (JWT based)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // JWT Filter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+
+
+    @Bean
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(factory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        return redisTemplate;
+    }
 
     }
 

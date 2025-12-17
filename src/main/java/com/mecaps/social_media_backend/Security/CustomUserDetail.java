@@ -13,16 +13,10 @@ import java.util.List;
 @Getter
 @Setter
 public class CustomUserDetail implements UserDetails {
-private final Long id;
-private final String email;
-private final String password;
-private final String username;
+private final User user;
 
     public CustomUserDetail(User user) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        this.username = user.getUserName();
+        this.user = user;
     }
 
     @Override
@@ -32,12 +26,12 @@ private final String username;
 
     @Override
     public @Nullable String getPassword() {
-        return password;
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getUserName();
     }
 
 }

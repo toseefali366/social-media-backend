@@ -1,5 +1,6 @@
-package com.mecaps.social_media_backend.Security;
+package com.mecaps.social_media_backend.Utils;
 
+import com.mecaps.social_media_backend.Security.CustomUserDetail;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
