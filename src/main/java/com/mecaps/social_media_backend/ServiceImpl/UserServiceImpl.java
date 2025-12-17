@@ -3,17 +3,16 @@ package com.mecaps.social_media_backend.ServiceImpl;
 import com.mecaps.social_media_backend.Entity.User;
 import com.mecaps.social_media_backend.Mapper.UserMapper;
 import com.mecaps.social_media_backend.Repository.UserRepository;
+import com.mecaps.social_media_backend.Request.ChangePasswordDTO;
 import com.mecaps.social_media_backend.Request.UserRequest;
 import com.mecaps.social_media_backend.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +21,7 @@ public class UserServiceImpl implements UserService {
     private final FileStorageService fileStorageService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<?> createUser(UserRequest userRequest) {
 
@@ -44,53 +44,42 @@ public class UserServiceImpl implements UserService {
         ));
     }
 
-//    private String saveImage(MultipartFile image , String folder) {
-//        try{
-//            if(image == null || image.isEmpty()) return null;
-//
-//            String uploadDir = "uploads/" + folder + "/";
-//            File dir = new File(uploadDir);
-//            if (!dir.exists()) dir.mkdirs();
-//
-//            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-//            String filePath = uploadDir + fileName;
-//            image.transferTo(new File(filePath));
-//            return filePath;
-//        }catch (Exception e){
-//            throw new RuntimeException("Failed to upload image");
-//        }
-//    }
+    public ResponseEntity<?> searchByUserName(String keyword) {
 
-//    private String saveImage(MultipartFile image, String folder) {
-//
-//        try {
-//            if (image == null || image.isEmpty()) return null;
-//
-//            // Use absolute path
-//            String uploadDir = System.getProperty("user.dir") + "/uploads/" + folder + "/";
-//            File dir = new File(uploadDir);
-//
-//            if (!dir.exists() && !dir.mkdirs()) {
-//                throw new RuntimeException("Failed to create directory: " + uploadDir);
-//            }
-//
-//            // Avoid unsafe filenames
-//            String original = image.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\ .\\-]", "_");
-//
-//            String fileName = UUID.randomUUID() + "_" + original;
-//            File destination = new File(uploadDir + fileName);
-//
-//            // Save file
-//            image.transferTo(destination);
-//
-//            // Return relative path for frontend
-//            return "/uploads/" + folder + "/" + fileName;
-//
-//        } catch (Exception e) {
-//            e.printStackTrace(); // <-- So you can see exact root cause
-//            throw new RuntimeException("Failed to upload image: " + e.getMessage());
-//        }
-//    }
+        // checking if keyword is empty
+
+        if (keyword == null || keyword.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                            "message", "Username cannot be empty",
+                            "success", false
+                    )
+            );
+        }
+        keyword = keyword.trim();
+
+            // here's we calling database then this will return the result from database
+
+        return ResponseEntity.ok(
+                userRepository.findByUserNameStartsWithIgnoreCase(keyword)
+        );
+
+    }
+
+    public String setPassword(Long id , ChangePasswordDTO request){
+        User user = userRepository.findById(id).orElseThrow(()->new RuntimeException("User not found"));
+
+        if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
+            return "Incorrect password";
+        }
+
+        if(!request.getNewPassword().equals(request.getConfirmPassword())){
+            return "New password and confirm password must match!";
+        }
+
+    user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        return "Password has been changed successfully";
+    }
 
 }
 

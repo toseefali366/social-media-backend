@@ -5,4 +5,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserService {
     ResponseEntity<?> createUser(UserRequest userRequest);
+    ResponseEntity<?> searchByUserName(String keyword);
 }

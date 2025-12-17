@@ -29,6 +29,7 @@ public class FileStorageService {
             String datePath = LocalDate.now().toString(); // 2025-01-20
             String uploadDir = BASE_UPLOAD_PATH + folder + "/" + datePath + "/";
             File dir = new File(uploadDir);
+
             if (!dir.exists() && !dir.mkdirs()) {
                 throw new RuntimeException("Failed to create directory: " + uploadDir);
             }

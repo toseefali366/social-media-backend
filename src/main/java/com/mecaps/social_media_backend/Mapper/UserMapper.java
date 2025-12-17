@@ -24,7 +24,6 @@ public class UserMapper {
                 .userName(userRequest.getUserName())
                 .dob(userRequest.getDob())
                 .password(passwordEncoder.encode(userRequest.getPassword()))
-                .location(userRequest.getLocation())
                 .build();
     }
 }
