@@ -5,6 +5,7 @@ import com.mecaps.social_media_backend.Mapper.UserMapper;
 import com.mecaps.social_media_backend.Repository.UserRepository;
 import com.mecaps.social_media_backend.Request.ChangePasswordDTO;
 import com.mecaps.social_media_backend.Request.UserRequest;
+import com.mecaps.social_media_backend.Security.CustomUserDetail;
 import com.mecaps.social_media_backend.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -65,15 +66,14 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public String setPassword(Long id , ChangePasswordDTO request){
-        User user = userRepository.findById(id).orElseThrow(()->new RuntimeException("User not found"));
-
+    public String updatePassword(CustomUserDetail customUserDetail, ChangePasswordDTO request){
+        User user = customUserDetail.getUser();
         if(!passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
-            return "Incorrect password";
+            throw new RuntimeException("Incorrect password" );
         }
 
         if(!request.getNewPassword().equals(request.getConfirmPassword())){
-            return "New password and confirm password must match!";
+            throw new RuntimeException("New password and confirm password must match!" );
         }
 
     user.setPassword(passwordEncoder.encode(request.getNewPassword()));

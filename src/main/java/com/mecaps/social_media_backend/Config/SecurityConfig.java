@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,9 +34,11 @@ public class SecurityConfig {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/**").permitAll()
-                        .requestMatchers("/auth/login").permitAll()// allow signup
-                        .anyRequest().authenticated()                  // everything else requires login
+                        .requestMatchers("/auth/login").permitAll()
+//                        .requestMatchers("/user/**")
+                                .anyRequest().authenticated()
+                        // allow signup
+                                          // everything else requires login
                 );
 
         // Add JWT filter
@@ -42,6 +47,14 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(factory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        return redisTemplate;
+    }
 
     }
 

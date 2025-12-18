@@ -5,4 +5,3 @@ public enum Visibility {
     PRIVATE,
     FRIENDS_ONLY
 }
-
