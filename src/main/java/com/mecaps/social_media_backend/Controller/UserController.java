@@ -1,47 +1,58 @@
 package com.mecaps.social_media_backend.Controller;
 
 import com.mecaps.social_media_backend.Entity.User;
-import com.mecaps.social_media_backend.Request.ChangePasswordDTO;
+import com.mecaps.social_media_backend.Request.UpdateUserRequest;
 import com.mecaps.social_media_backend.Request.UserRequest;
 import com.mecaps.social_media_backend.Response.MeResponse;
+import com.mecaps.social_media_backend.Response.UserResponse;
 import com.mecaps.social_media_backend.Security.CurrentUser;
 import com.mecaps.social_media_backend.Security.CustomUserDetail;
 import com.mecaps.social_media_backend.Service.UserService;
-import com.mecaps.social_media_backend.ServiceImpl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
-
-    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create", consumes = "multipart/form-data")
     public ResponseEntity<?> createUser(@ModelAttribute UserRequest userRequest) {
+
         return userService.createUser(userRequest);
     }
-
+  @GetMapping("/{id}")
+    public ResponseEntity<UserResponse>findUserById(@PathVariable Long id) {
+     return ResponseEntity.ok(userService.findUserById(id));
+  }
     @GetMapping("/me")
-    public MeResponse me(@CurrentUser CustomUserDetail user) {
-        User user1 = user.getUser();
-        return new MeResponse(user1.getId(),
-                user1.getUserName(),
-                user1.getEmail());
-    }
-    @GetMapping("/search")
-    public ResponseEntity<?> searchByUserName(@RequestParam String keyword){
-        return userService.searchByUserName(keyword);
+    public CustomUserDetail me(@CurrentUser CustomUserDetail user) {
+        return user;
 
     }
-
-    @PutMapping("/changePassword")
-    public String setPassword(@CurrentUser CustomUserDetail customUserDetail, @RequestBody ChangePasswordDTO request){
-        return userService.updatePassword(customUserDetail,request);
+    @PutMapping(value = "/update", consumes = "multipart/form-data")
+    public ResponseEntity<UserResponse> updateMe(
+            @CurrentUser CustomUserDetail currentUser,
+            @ModelAttribute UpdateUserRequest request
+    ) {
+        return ResponseEntity.ok(
+                userService.updateCurrentUser(currentUser, request)
+        );
     }
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteCurrentUser(
+            @CurrentUser CustomUserDetail currentUser) {
+
+        userService.deleteCurrentUser(currentUser);
+        return ResponseEntity.noContent().build();
+    }
+
+
 
 
 }
+
