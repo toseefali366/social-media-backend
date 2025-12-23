@@ -10,39 +10,102 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalException {
+
+    /* ================= USER / AUTH ================= */
+
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException exception, HttpServletRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                exception.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                request.getRequestURI(),
-                exception.getClass().getSimpleName()
+    public ResponseEntity<ErrorResponse> handleUserNotFound(
+            UserNotFoundException ex, HttpServletRequest request) {
+
+        return buildErrorResponse(
+                ex,
+                HttpStatus.NOT_FOUND,
+                "USER_NOT_FOUND",
+                request
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InvalidOtpException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidOtpException(InvalidOtpException exception, HttpServletRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                request.getRequestURI(),
-                exception.getClass().getSimpleName()
+    public ResponseEntity<ErrorResponse> handleInvalidOtp(
+            InvalidOtpException ex, HttpServletRequest request) {
+
+        return buildErrorResponse(
+                ex,
+                HttpStatus.BAD_REQUEST,
+                "INVALID_OTP",
+                request
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    /* ================= FILE VALIDATION ================= */
+
     @ExceptionHandler(FileNotUploadException.class)
-    public ResponseEntity<ErrorResponse> handleFileNotUploadException(FileNotUploadException exception, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleFileNotUploaded(
+            FileNotUploadException ex, HttpServletRequest request) {
+
+        return buildErrorResponse(
+                ex,
+                HttpStatus.BAD_REQUEST,
+                "FILE_NOT_UPLOADED",
+                request
+        );
+    }
+
+    @ExceptionHandler(InvalidFileTypeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidFileType(
+            InvalidFileTypeException ex, HttpServletRequest request) {
+
+        return buildErrorResponse(
+                ex,
+                HttpStatus.BAD_REQUEST,
+                "INVALID_FILE_TYPE",
+                request
+        );
+    }
+
+    @ExceptionHandler(FileSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleFileSizeExceeded(
+            FileSizeExceededException ex, HttpServletRequest request) {
+
+        return buildErrorResponse(
+                ex,
+                HttpStatus.PAYLOAD_TOO_LARGE,
+                "FILE_SIZE_EXCEEDED",
+                request
+        );
+    }
+
+    /* ================= FILE STORAGE ================= */
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ErrorResponse> handleFileStorageException(
+            FileStorageException ex, HttpServletRequest request) {
+
+        return buildErrorResponse(
+                ex,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "FILE_STORAGE_ERROR",
+                request
+        );
+    }
+
+    /* ================= COMMON BUILDER ================= */
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(
+            Exception ex,
+            HttpStatus status,
+            String errorCode,
+            HttpServletRequest request) {
+
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
+                status.value(),
+                status.name(),
+                ex.getMessage(),
                 request.getRequestURI(),
-                exception.getClass().getSimpleName()
+                errorCode
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.status(status).body(errorResponse);
     }
 }

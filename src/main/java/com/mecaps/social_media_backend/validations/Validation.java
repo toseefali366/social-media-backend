@@ -1,6 +1,9 @@
 package com.mecaps.social_media_backend.validations;
 
 import com.mecaps.social_media_backend.Exception.FileNotUploadException;
+import com.mecaps.social_media_backend.Exception.FileSizeExceededException;
+import com.mecaps.social_media_backend.Exception.FileStorageException;
+import com.mecaps.social_media_backend.Exception.InvalidFileTypeException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +32,7 @@ public String saveImage(MultipartFile file, String folder) {
         String uploadDir = BASE_UPLOAD_PATH + folder + "/" + datePath + "/";
         File dir = new File(uploadDir);
         if (!dir.exists() && !dir.mkdirs()) {
-            throw new RuntimeException("Failed to create directory: " + uploadDir);
+            throw new FileStorageException("Failed to create directory: " + uploadDir);
         }
 
         // Clean filename
@@ -62,18 +65,18 @@ private void validateFileType(MultipartFile file) {
         return; // valid file
     }
 
-    throw new RuntimeException("Unsupported file type: " + contentType);
+    throw new InvalidFileTypeException("Unsupported file type: " + contentType);
 }
 
 private void validateFileSize(MultipartFile file) {
     long sizeMB = file.getSize() / (1024 * 1024);
 
     if (file.getContentType().startsWith("image/") && sizeMB > 10) {
-        throw new RuntimeException("Image too large (max 10MB)");
+        throw new FileSizeExceededException("Image too large (max 10MB)");
     }
 
     if (file.getContentType().startsWith("video/") && sizeMB > 200) {
-        throw new RuntimeException("Video too large (max 200MB)");
+        throw new FileSizeExceededException("Video too large (max 200MB)");
     }
 }
 

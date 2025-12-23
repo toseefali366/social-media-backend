@@ -10,9 +10,11 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 public class ErrorResponse {
-private LocalDateTime timestamp;
-private String message;
-private int status;
-private String path;
-private String exception;
+
+    private LocalDateTime timestamp;   // When error happened
+    private int status;                // HTTP status code
+    private String error;              // Short error name (BAD_REQUEST)
+    private String message;            // Human readable message
+    private String path;               // API path
+    private String errorCode;           // Custom error code (IMPORTANT)
 }
