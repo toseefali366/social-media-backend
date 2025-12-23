@@ -42,54 +42,6 @@ public class UserServiceImpl implements UserService {
         ));
     }
 
-//    private String saveImage(MultipartFile image , String folder) {
-//        try{
-//            if(image == null || image.isEmpty()) return null;
-//
-//            String uploadDir = "uploads/" + folder + "/";
-//            File dir = new File(uploadDir);
-//            if (!dir.exists()) dir.mkdirs();
-//
-//            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-//            String filePath = uploadDir + fileName;
-//            image.transferTo(new File(filePath));
-//            return filePath;
-//        }catch (Exception e){
-//            throw new RuntimeException("Failed to upload image");
-//        }
-//    }
-
-//    private String saveImage(MultipartFile image, String folder) {
-//
-//        try {
-//            if (image == null || image.isEmpty()) return null;
-//
-//            // Use absolute path
-//            String uploadDir = System.getProperty("user.dir") + "/uploads/" + folder + "/";
-//            File dir = new File(uploadDir);
-//
-//            if (!dir.exists() && !dir.mkdirs()) {
-//                throw new RuntimeException("Failed to create directory: " + uploadDir);
-//            }
-//
-//            // Avoid unsafe filenames
-//            String original = image.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\ .\\-]", "_");
-//
-//            String fileName = UUID.randomUUID() + "_" + original;
-//            File destination = new File(uploadDir + fileName);
-//
-//            // Save file
-//            image.transferTo(destination);
-//
-//            // Return relative path for frontend
-//            return "/uploads/" + folder + "/" + fileName;
-//
-//        } catch (Exception e) {
-//            e.printStackTrace(); // <-- So you can see exact root cause
-//            throw new RuntimeException("Failed to upload image: " + e.getMessage());
-//        }
-//    }
-
 }
 
 

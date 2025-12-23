@@ -1,6 +1,7 @@
 package com.mecaps.social_media_backend.ServiceImpl;
 
 import com.mecaps.social_media_backend.Entity.User;
+import com.mecaps.social_media_backend.Exception.InvalidOtpException;
 import com.mecaps.social_media_backend.Exception.UserNotFoundException;
 import com.mecaps.social_media_backend.Repository.UserRepository;
 import com.mecaps.social_media_backend.Service.ForgotPasswordService;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private final UserRepository userRepository;
-    private final OtpRedisServiceImpl otpRedisService;
+    private final OtpRedisService otpRedisService;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
 
@@ -30,7 +31,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
                 .orElseThrow(()-> new UserNotFoundException("User not found"));
         String savedOtp = otpRedisService.getOtp(user.getId());
         if(savedOtp == null || !savedOtp.equals(otp)){
-            throw new RuntimeException("Invalid or expired OTP");
+            throw new InvalidOtpException("Invalid or expired OTP");
         }
     }
 

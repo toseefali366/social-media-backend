@@ -20,5 +20,5 @@ public class Location {
     private String state;
     @OneToOne
     private User user;
-    private String ip;
+    private String ipAddress;
 }

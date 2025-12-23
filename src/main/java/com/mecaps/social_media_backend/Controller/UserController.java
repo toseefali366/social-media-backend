@@ -24,11 +24,11 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public MeResponse me(@CurrentUser CustomUserDetail user) {
-        User user1 = user.getUser();
-        return new MeResponse(user1.getId(),
-                user1.getUserName(),
-                user1.getEmail());
+    public MeResponse me(@CurrentUser CustomUserDetail customUserDetail) {
+        User user = customUserDetail.getUser();
+        return new MeResponse(user.getId(),
+                user.getUserName(),
+                user.getEmail());
     }
 
 

@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 
 @Configuration
@@ -34,14 +35,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ Public APIs (NO JWT REQUIRED)
                         .requestMatchers(
                                 "/user/create",
                                 "/auth/login",
                                 "/redis-auth/**"     // forgot-password, verify-otp, reset-password
                         ).permitAll()
 
-                        // 🔒 Everything else requires JWT
+                        //  Everything else requires JWT
                         .anyRequest().authenticated()
                 )
 
@@ -57,18 +57,11 @@ public class SecurityConfig {
     }
 
 
-
     @Bean
-    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
-        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(factory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
-        return redisTemplate;
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     }
-
-
 
 
