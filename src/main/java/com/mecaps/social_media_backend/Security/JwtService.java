@@ -25,21 +25,21 @@ public String generateAccessToken(User user){
             .signWith(getSecretKey())
             .compact();
 }
+    public Claims extractAllClaims(String token){
+        return Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
 
-public String extractEmail(String token){
-return extractAllClaims(token).getSubject();
+       public String extractEmail(String token){
+            return extractAllClaims(token).getSubject();
 }
-public boolean isValidateToken(String token){
-    Claims claims = extractAllClaims(token);
-    return claims.getExpiration().after(new Date());
+       public boolean isTokenValid(String token){
+           Claims claims = extractAllClaims(token);
+           return claims.getExpiration().after(new Date());
 }
 
-public Claims extractAllClaims(String token){
-    return Jwts.parser()
-            .verifyWith(getSecretKey())
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
-}
 
 }

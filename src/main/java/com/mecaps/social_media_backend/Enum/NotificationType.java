@@ -2,7 +2,9 @@ package com.mecaps.social_media_backend.Enum;
 
 public enum NotificationType {
     FRIEND_REQUEST,
-    LIKE,
-    COMMENT
+    FRIEND_REQUEST_ACCEPTED,
+    FRIEND_REQUEST_REJECTED,
+    POST_LIKE,
+    POST_COMMENT,
+    MESSAGE
 }
-
