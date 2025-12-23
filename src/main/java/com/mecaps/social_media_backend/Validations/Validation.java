@@ -1,4 +1,4 @@
-package com.mecaps.social_media_backend.validations;
+package com.mecaps.social_media_backend.Validations;
 
 import com.mecaps.social_media_backend.Exception.FileNotUploadException;
 import com.mecaps.social_media_backend.Exception.FileSizeExceededException;

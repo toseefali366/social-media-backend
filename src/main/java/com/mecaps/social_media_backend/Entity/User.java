@@ -64,6 +64,6 @@ public class User {
     @CreationTimestamp
     private LocalDateTime signUpDate;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, name = "user_name")
     private String userName;
 }

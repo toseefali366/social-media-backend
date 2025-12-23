@@ -89,6 +89,17 @@ public class GlobalException {
         );
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(
+            UserAlreadyExistsException ex, HttpServletRequest request){
+        return buildErrorResponse(
+                ex,
+                HttpStatus.CONFLICT,
+                "USER_ALREADY_EXISTS",
+                request
+        );
+    }
+
     /* ================= COMMON BUILDER ================= */
 
     private ResponseEntity<ErrorResponse> buildErrorResponse(

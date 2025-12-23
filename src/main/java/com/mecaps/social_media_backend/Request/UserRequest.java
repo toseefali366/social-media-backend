@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+
 public class UserRequest {
     private String bio;
     private Country country;
