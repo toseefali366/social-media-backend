@@ -2,14 +2,11 @@ package com.mecaps.social_media_backend.Controller;
 
 import com.mecaps.social_media_backend.Entity.User;
 import com.mecaps.social_media_backend.Exception.InvalidCredentials;
-import com.mecaps.social_media_backend.Exception.UserNotFoundException;
 import com.mecaps.social_media_backend.Repository.UserRepository;
 import com.mecaps.social_media_backend.Request.AuthDTO;
 import com.mecaps.social_media_backend.Security.JwtService;
 import com.mecaps.social_media_backend.Service.TokenBlackListService;
-import io.jsonwebtoken.Claims;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +16,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthControllers {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final TokenBlackListService tokenBlackListService;
 
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, TokenBlackListService tokenBlackListService) {
+    public AuthControllers(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, TokenBlackListService tokenBlackListService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;

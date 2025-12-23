@@ -7,7 +7,6 @@ import com.mecaps.social_media_backend.Service.EmailService;
 import com.mecaps.social_media_backend.Service.OtpService;
 import com.mecaps.social_media_backend.Util.OtpStore;
 import com.mecaps.social_media_backend.Util.OtpUtil;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +22,7 @@ private  final UserRepository userRepository;
     }
 
     public void sendOtp(String email) {
-        String otp = OtpUtil.generateOtp();
+        String otp = OtpUtil.generateOtpCode();
         otpStore.saveOtp(email, otp);
         emailService.sendOtp(email, otp);
     }

@@ -18,7 +18,7 @@ private final UserServiceImpl userService;
         this.userService = userService;
     }
 
-    @PostMapping(value = "/signup",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/create   ",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createUser(@ModelAttribute UserRequest request){
 return userService.createUser(request);
     }
