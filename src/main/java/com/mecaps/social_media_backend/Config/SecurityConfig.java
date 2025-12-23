@@ -27,9 +27,10 @@ private final JwtAuthFilter jwtFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer :: disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/user/create").permitAll()
-                        //.requestMatchers("/user/**").permitAll()
-                        .requestMatchers("/auth/login").permitAll().anyRequest().authenticated());
+        .authorizeHttpRequests
+        (auth -> auth.requestMatchers("/user/create").permitAll()
+         //.requestMatchers("/user/**").permitAll()
+         .requestMatchers("/auth/login").permitAll().anyRequest().authenticated());
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 

@@ -8,12 +8,14 @@ import com.mecaps.social_media_backend.Request.UserRequest;
 import com.mecaps.social_media_backend.Response.UserResponse;
 import com.mecaps.social_media_backend.Security.CustomUserDetail;
 import com.mecaps.social_media_backend.Service.UserService;
+import com.mecaps.social_media_backend.validations.Validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.validation.Validator;
 import java.io.File;
 import java.util.Map;
 import java.util.UUID;
@@ -24,7 +26,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
+    private final Validation validation;
 
 
     public ResponseEntity<?> createUser(UserRequest userRequest) {
@@ -32,10 +34,10 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.convertToUser(userRequest);
 
         // Upload images
-        String profilePath = saveImage(userRequest.getProfilePictureUrl(), "profile");
-        String coverPath = saveImage(userRequest.getCoverPictureUrl(), "cover");
+        String profilePath = validation.saveImage(userRequest.getProfilePictureUrl(), "profile");
+        String coverPath = validation.saveImage(userRequest.getCoverPictureUrl(), "cover");
 
-//         Set path into entity
+        //Set path into entity
         user.setProfilePictureUrl(profilePath);
        user.setCoverPictureUrl(coverPath);
 
@@ -55,37 +57,8 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserResponse(user);
     }
 
-    private String saveImage(MultipartFile image, String folder) {
 
-        try {
-            if (image == null || image.isEmpty()) return null;
 
-            // Use absolute path
-            String uploadDir = System.getProperty("user.dir") + "/uploads/" + folder + "/";
-            File dir = new File(uploadDir);
-
-            if (!dir.exists() && !dir.mkdirs()) {
-                throw new RuntimeException("Failed to create directory: " + uploadDir);
-            }
-
-            // Avoid unsafe filenames
-            String original = image.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\ .\\-]", "_");
-
-            String fileName = UUID.randomUUID() + "_" + original;
-            File destination = new File(uploadDir + fileName);
-
-            // Save file
-            image.transferTo(destination);
-
-            // Return relative path for frontend
-            return "/uploads/" + folder + "/" + fileName;
-
-        } catch (Exception e) {
-            e.printStackTrace(); // <-- So you can see exact root cause
-            throw new RuntimeException("Failed to upload image: " + e.getMessage());
-        }
-
-        }
     @Override
     public UserResponse updateCurrentUser(
             CustomUserDetail currentUser,
@@ -128,13 +101,13 @@ public class UserServiceImpl implements UserService {
         //  File uploads
         if (request.getProfilePictureUrl() != null && !request.getProfilePictureUrl().isEmpty()) {
             user.setProfilePictureUrl(
-                    saveImage(request.getProfilePictureUrl(), "profile")
+       validation.saveImage(request.getProfilePictureUrl(), "profile")
             );
         }
 
         if (request.getCoverPictureUrl() != null && !request.getCoverPictureUrl().isEmpty()) {
             user.setCoverPictureUrl(
-                    saveImage(request.getCoverPictureUrl(), "cover")
+                 validation.saveImage(request.getCoverPictureUrl(), "cover")
             );
         }
 
@@ -150,6 +123,8 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new RuntimeException("Current user not found");
         }
+       validation.deleteImage(user.getProfilePictureUrl());
+        validation.deleteImage(user.getCoverPictureUrl());
 
         userRepository.delete(user);
     }
