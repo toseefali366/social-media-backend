@@ -1,5 +1,6 @@
 package com.mecaps.social_media_backend.validations;
 
+import com.mecaps.social_media_backend.Exception.FileNotUploadException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,7 +48,7 @@ public String saveImage(MultipartFile file, String folder) {
 
     } catch (Exception e) {
         e.printStackTrace();
-        throw new RuntimeException("Failed to upload file: " + e.getMessage());
+        throw new FileNotUploadException("Failed to upload file: " + e.getMessage());
     }
 }
 

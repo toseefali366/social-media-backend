@@ -16,8 +16,8 @@ public class GlobalException {
                 LocalDateTime.now(),
                 exception.getMessage(),
                 HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
-                request.getRequestURI()
+                request.getRequestURI(),
+                exception.getClass().getSimpleName()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
@@ -29,7 +29,19 @@ public class GlobalException {
                 exception.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
                 request.getRequestURI(),
-                "Invalid OTP"
+                exception.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FileNotUploadException.class)
+    public ResponseEntity<ErrorResponse> handleFileNotUploadException(FileNotUploadException exception, HttpServletRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                exception.getClass().getSimpleName()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
