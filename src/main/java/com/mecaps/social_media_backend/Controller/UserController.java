@@ -1,6 +1,7 @@
 package com.mecaps.social_media_backend.Controller;
 
 import com.mecaps.social_media_backend.Entity.User;
+import com.mecaps.social_media_backend.Request.ChangePasswordDTO;
 import com.mecaps.social_media_backend.Request.UpdateUserRequest;
 import com.mecaps.social_media_backend.Request.UserRequest;
 import com.mecaps.social_media_backend.Response.MeResponse;
@@ -10,6 +11,7 @@ import com.mecaps.social_media_backend.Security.CustomUserDetail;
 import com.mecaps.social_media_backend.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,7 +52,22 @@ public class UserController {
         userService.deleteCurrentUser(currentUser);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @AuthenticationPrincipal CustomUserDetail customUserDetail,
+            @RequestBody ChangePasswordDTO request
+    ) {
+        String response = userService.updatePassword(customUserDetail, request);
+        return ResponseEntity.ok(response);
+    }
 
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchByUserName(
+            @RequestParam("keyword") String keyword
+    ) {
+        return userService.searchByUserName(keyword);
+    }
 
 
 
