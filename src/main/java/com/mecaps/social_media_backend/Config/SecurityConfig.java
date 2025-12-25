@@ -35,7 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/user/create",
                                 "/auth/login",
-                                "/auth/logout",     // ✅ ADD THIS
+                                "/auth/logout",     //  ADD THIS
                                 "/redis-auth/**"
                         ).permitAll()
 
