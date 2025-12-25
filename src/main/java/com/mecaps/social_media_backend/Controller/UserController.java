@@ -20,20 +20,24 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
     @PostMapping(value = "/create", consumes = "multipart/form-data")
     public ResponseEntity<?> createUser(@ModelAttribute UserRequest userRequest) {
 
         return userService.createUser(userRequest);
     }
-  @GetMapping("/{id}")
-    public ResponseEntity<UserResponse>findUserById(@PathVariable Long id) {
-     return ResponseEntity.ok(userService.findUserById(id));
-  }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> findUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findUserById(id));
+    }
+
     @GetMapping("/me")
     public CustomUserDetail me(@CurrentUser CustomUserDetail user) {
         return user;
 
     }
+
     @PutMapping(value = "/update", consumes = "multipart/form-data")
     public ResponseEntity<UserResponse> updateMe(
             @CurrentUser CustomUserDetail currentUser,
@@ -43,6 +47,7 @@ public class UserController {
                 userService.updateCurrentUser(currentUser, request)
         );
     }
+
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteCurrentUser(
             @CurrentUser CustomUserDetail currentUser) {
@@ -50,8 +55,6 @@ public class UserController {
         userService.deleteCurrentUser(currentUser);
         return ResponseEntity.noContent().build();
     }
-
-
 
 
 }

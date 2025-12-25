@@ -24,7 +24,7 @@ public String generateAccessToken(User user){
             .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .signWith(getSecretKey())
             .compact();
-}
+  }
     public Claims extractAllClaims(String token){
         return Jwts.parser()
                 .verifyWith(getSecretKey())
