@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 "/redis-auth/**"
                         ).permitAll()
 
-                        //  Everything else requires JWT
+                                        //  Everything else requires JWT
                         .anyRequest().authenticated()
                 )
 

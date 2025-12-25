@@ -2,6 +2,8 @@ package com.mecaps.social_media_backend.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -19,6 +21,7 @@ public class Location {
     private Double longitude;
     private String state;
     @OneToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
     private String ipAddress;
 }

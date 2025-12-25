@@ -1,9 +1,9 @@
 package com.mecaps.social_media_backend.ServiceImpl;
 
 import com.mecaps.social_media_backend.Entity.User;
+import com.mecaps.social_media_backend.Exception.ConfirmPasswordDoesNotMatch;
 import com.mecaps.social_media_backend.Exception.PasswordDoesNotMatchException;
 import com.mecaps.social_media_backend.Exception.UserAlreadyExistException;
-import com.mecaps.social_media_backend.Exception.UserAlreadyVerifiedException;
 import com.mecaps.social_media_backend.Exception.UserNotFoundException;
 import com.mecaps.social_media_backend.Mapper.UserMapper;
 import com.mecaps.social_media_backend.Repository.UserRepository;
@@ -14,12 +14,10 @@ import com.mecaps.social_media_backend.Security.CustomUserDetail;
 import com.mecaps.social_media_backend.Service.UserService;
 import com.mecaps.social_media_backend.Validations.Validation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +34,7 @@ public class UserServiceImpl implements UserService {
         String email = userRequest.getEmail();
         String PhoneNumber = userRequest.getPhoneNumber();
         userRepository.findByEmailOrUserNameOrPhoneNumber(email, userName, PhoneNumber)
-                .orElseThrow(() -> new UserAlreadyExistException("User is Already Exist"));
+                .ifPresent(user -> new UserAlreadyExistException("User is Already Exist"));
 
         User user = userMapper.convertToUser(userRequest);
 
@@ -159,7 +157,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            throw new RuntimeException("New password and confirm password must match!");
+            throw new ConfirmPasswordDoesNotMatch("New password and confirm password must match!");
         }
 
 
