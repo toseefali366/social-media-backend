@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
         String email = userRequest.getEmail();
         String PhoneNumber = userRequest.getPhoneNumber();
         userRepository.findByEmailOrUserNameOrPhoneNumber(email, userName, PhoneNumber)
-                .orElseThrow(() -> new UserAlreadyExistException("User is Already Exist"));
+                .ifPresent( user -> new UserAlreadyExistException("User is Already Exist"));
 
         User user = userMapper.convertToUser(userRequest);
 
