@@ -1,6 +1,9 @@
 package com.mecaps.social_media_backend.ServiceImpl;
 
 import com.mecaps.social_media_backend.Entity.User;
+import com.mecaps.social_media_backend.Exception.PasswordDoesNotMatchException;
+import com.mecaps.social_media_backend.Exception.UserAlreadyExistException;
+import com.mecaps.social_media_backend.Exception.UserAlreadyVerifiedException;
 import com.mecaps.social_media_backend.Exception.UserNotFoundException;
 import com.mecaps.social_media_backend.Mapper.UserMapper;
 import com.mecaps.social_media_backend.Repository.UserRepository;
@@ -33,7 +36,7 @@ public class UserServiceImpl implements UserService {
         String email = userRequest.getEmail();
         String PhoneNumber = userRequest.getPhoneNumber();
         userRepository.findByEmailOrUserNameOrPhoneNumber(email, userName, PhoneNumber)
-                .orElseThrow(() -> new UserNotFoundException("User is Already Exist"));
+                .orElseThrow(() -> new UserAlreadyExistException("User is Already Exist"));
 
         User user = userMapper.convertToUser(userRequest);
 
@@ -54,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse findUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         return userMapper.toUserResponse(user);
     }
 
@@ -65,6 +68,9 @@ public class UserServiceImpl implements UserService {
             UserRequest request) {
 
         User user = currentUser.getUser();
+        if (user == null) {
+            throw new UserNotFoundException("Current user not found");
+        }
 
         if (request.getBio() != null)
             user.setBio(request.getBio());
@@ -149,7 +155,7 @@ public class UserServiceImpl implements UserService {
     public String updatePassword(CustomUserDetail customUserDetail, ChangePasswordDTO request) {
         User user = customUserDetail.getUser();
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new RuntimeException("Incorrect password");
+            throw new PasswordDoesNotMatchException("Incorrect password");
         }
 
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {

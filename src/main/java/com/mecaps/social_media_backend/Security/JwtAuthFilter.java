@@ -1,5 +1,6 @@
 package com.mecaps.social_media_backend.Security;
 
+import com.mecaps.social_media_backend.Service.TokenBlackListService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,43 +17,71 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
+
     private final JwtService jwtService;
     private final CustomUserDetailService customUserDetailService;
+    private final TokenBlackListService tokenBlackListService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
-                                    FilterChain filterChain
-    ) throws ServletException, IOException {
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
+        /* Skip JWT validation for public endpoints */
         String path = request.getServletPath();
-        if (path.startsWith("/redis-auth")
-                || path.startsWith("/auth/login")
-                || path.startsWith("/user/create")) {
+
+        if (path.equals("/auth/logout")
+                || path.equals("/auth/login")
+                || path.startsWith("/redis-auth")
+                || path.equals("/user/create")) {
 
             filterChain.doFilter(request, response);
             return;
         }
 
+
+        // Read Authorization header */
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            String email = jwtService.extractEmail(token);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = customUserDetailService.loadUserByUsername(email);
-                if (jwtService.isTokenValid(token)) {
-                    UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
-                                    userDetails.getAuthorities());
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(auth);
-                }
+        String token = authHeader.substring(7);
+
+        /*  Check blacklist (logout support) */
+        if (tokenBlackListService.isBlacklisted(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Token has been logged out");
+            return;
+        }
+
+        /*  Extract email from token */
+        String email = jwtService.extractEmail(token);
+
+        /*  Validate & set SecurityContext */
+        if (email != null
+                && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+            UserDetails userDetails =
+                    customUserDetailService.loadUserByUsername(email);
+
+            if (jwtService.isTokenValid(token)) {
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
             }
         }
-            filterChain.doFilter(request, response);
+
+        /*  Continue filter chain */
+        filterChain.doFilter(request, response);
     }
 }

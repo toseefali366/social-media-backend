@@ -4,9 +4,6 @@ import com.mecaps.social_media_backend.Security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -38,7 +35,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/user/create",
                                 "/auth/login",
-                                "/redis-auth/**"     // forgot-password, verify-otp, reset-password
+                                "/auth/logout",     // ✅ ADD THIS
+                                "/redis-auth/**"
                         ).permitAll()
 
                         //  Everything else requires JWT

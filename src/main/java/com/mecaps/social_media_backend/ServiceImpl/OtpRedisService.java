@@ -9,20 +9,22 @@ import java.time.Duration;
 @Service
 @RequiredArgsConstructor
 public class OtpRedisService {
+
     private final StringRedisTemplate redisTemplate;
     private static final Duration OTP_TTL = Duration.ofMinutes(5);
 
-    public void saveOtp(Long userId, String otp){
+    public void saveOtp(Long userId, String otp) {
         redisTemplate.opsForValue()
-                .set("forgot:otp:"+ userId,otp,OTP_TTL);
+                .set("verify:otp:" + userId, otp, OTP_TTL);
     }
 
-    public String getOtp(Long userId){
+    public String getOtp(Long userId) {
         return redisTemplate.opsForValue()
-                .get("forgot:otp:"+ userId);
+                .get("verify:otp:" + userId);
     }
-    public void deleteOtp(Long userId){
-        redisTemplate.delete("forgot:otp:"+ userId);
+
+    public void deleteOtp(Long userId) {
+        redisTemplate.delete("verify:otp:" + userId);
     }
 }
 

@@ -37,6 +37,31 @@ public class GlobalException {
         );
     }
 
+    @ExceptionHandler(PasswordDoesNotMatchException.class)
+    public ResponseEntity<ErrorResponse> handlePasswordDoesNotMatch(
+            PasswordDoesNotMatchException ex, HttpServletRequest request
+    ){
+        return buildErrorResponse(
+                ex,
+                HttpStatus.BAD_REQUEST,
+                "PASSWORD_DOES_NOT_MATCH",
+                request
+        );
+    }
+
+
+    @ExceptionHandler(ConfirmPasswordDoesNotMatch.class)
+    public ResponseEntity<ErrorResponse> handleConfirmPasswordDoesNotMatch(
+            ConfirmPasswordDoesNotMatch ex, HttpServletRequest request
+    ){
+        return buildErrorResponse(
+                ex,
+                HttpStatus.BAD_REQUEST,
+                "CONFIRM_PASSWORD_DOES_NOT_MATCH",
+                request
+        );
+    }
+
     /* ================= FILE VALIDATION ================= */
 
     @ExceptionHandler(FileNotUploadException.class)
@@ -96,6 +121,28 @@ public class GlobalException {
                 ex,
                 HttpStatus.CONFLICT,
                 "USER_ALREADY_EXISTS",
+                request
+        );
+    }
+
+    @ExceptionHandler(UserAlreadyVerifiedException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyVerified(
+            UserAlreadyVerifiedException ex, HttpServletRequest request){
+        return buildErrorResponse(
+                ex,
+                HttpStatus.CONFLICT,
+                "USER_ALREADY_VERIFIED",
+                request
+        );
+    }
+
+    @ExceptionHandler(InvalidCredentials.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(
+            InvalidCredentials ex, HttpServletRequest request){
+        return buildErrorResponse(
+                ex,
+                HttpStatus.BAD_REQUEST,
+                "INVALID_CREDENTIALS",
                 request
         );
     }

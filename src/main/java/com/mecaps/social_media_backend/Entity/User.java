@@ -43,8 +43,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    //private Boolean isVerified;
-
+    private Boolean isVerified = false;
+    
     @Column(nullable = false)
     private String lastName;
 

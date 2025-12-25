@@ -1,6 +1,7 @@
 package com.mecaps.social_media_backend.ServiceImpl;
 
 import com.mecaps.social_media_backend.Entity.User;
+import com.mecaps.social_media_backend.Exception.PasswordDoesNotMatchException;
 import com.mecaps.social_media_backend.Exception.UserNotFoundException;
 import com.mecaps.social_media_backend.Repository.UserRepository;
 import com.mecaps.social_media_backend.Request.AuthDTO;
@@ -32,12 +33,13 @@ public class AuthServiceImpl implements AuthService {
                 );
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Passwords don't match");
+            throw new PasswordDoesNotMatchException("Passwords don't match");
         }
 
         locationService.saveOrUpdateLocation(user, httpRequest);
         String token = jwtService.generateAccessToken(user);
-        return new AuthResponse(token, "Login successful");
+        String refreshToken = jwtService.generateRefreshToken(user);
+        return new AuthResponse(token, refreshToken,"Login successful");
     }
 
 }
