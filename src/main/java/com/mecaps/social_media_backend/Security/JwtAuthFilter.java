@@ -1,7 +1,5 @@
 package com.mecaps.social_media_backend.Security;
 
-import com.mecaps.social_media_backend.Service.TokenBlackListService;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
