@@ -1,60 +1,127 @@
 package com.mecaps.social_media_backend.validations;
 
+import com.mecaps.social_media_backend.entity.Post;
+import com.mecaps.social_media_backend.exception.*;
+import com.mecaps.social_media_backend.repository.PostRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Component
-public class Validation {
-    public String saveImage(MultipartFile image, String folder) {
+@RequiredArgsConstructor
+@Slf4j
+public class Validation  {
 
-        try {
-            if (image == null || image.isEmpty()) return null;
+private final String BASE_UPLOAD_PATH = System.getProperty("user.dir") + "/uploads/";
+private final PostRepository postRepository;
 
-            // Use absolute path
-            String uploadDir = System.getProperty("user.dir") + "/uploads/" + folder + "/";
-            File dir = new File(uploadDir);
+public String saveImage(MultipartFile file, String folder) {
 
-            if (!dir.exists() && !dir.mkdirs()) {
-                throw new RuntimeException("Failed to create directory: " + uploadDir);
-            }
+    try {
+        if (file == null || file.isEmpty()) return null;
 
-            // Avoid unsafe filenames
-            String original = image.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\ .\\-]", "_");
+        // Validate file type
+        validateFileType(file);
 
-            String fileName = UUID.randomUUID() + "_" + original;
-            File destination = new File(uploadDir + fileName);
+        // Validate size
+        validateFileSize(file);
 
-            // Save file
-            image.transferTo(destination);
-
-            // Return relative path for frontend
-            return "/uploads/" + folder + "/" + fileName;
-
-        } catch (Exception e) {
-            e.printStackTrace(); // <-- So you can see exact root cause
-            throw new RuntimeException("Failed to upload image: " + e.getMessage());
+        // Build folder structur    e
+        String datePath = LocalDate.now().toString(); // 2025-01-20
+        String uploadDir = BASE_UPLOAD_PATH + folder + "/" + datePath + "/";
+        File dir = new File(uploadDir);
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new FileStorageException("Failed to create directory: " + uploadDir);
         }
 
+        // Clean filename
+        String safeName = cleanFileName(file.getOriginalFilename());
+
+        // Create unique file name
+        String finalName = UUID.randomUUID() + "_" + safeName;
+
+        File destination = new File(uploadDir + finalName);
+
+        // Save the actual file
+        file.transferTo(destination);
+
+        // Return a public-accessible path
+        return "/uploads/" + folder + "/" + datePath + "/" + finalName;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        throw new FileNotUploadException("Failed to upload file: " + e.getMessage());
     }
-    public void deleteImage(String imagePath) {
-        try {
-            if (imagePath == null || imagePath.isBlank())
-                return;
+}
 
-            String fullPath = System.getProperty("user.dir") + imagePath;
-            File file = new File(fullPath);
+private void validateFileType(MultipartFile file) {
+    String contentType = file.getContentType();
 
-            if (file.exists()) {
-                boolean deleted = file.delete();
-                if (!deleted) {
-                    System.out.println("Failed to delete file: " + fullPath);
-                }
+    if (contentType == null) throw new RuntimeException("Unknown file type");
+
+    // Allow only images and videos
+    if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
+        return; // valid file
+    }
+
+    throw new InvalidFileTypeException("Unsupported file type: " + contentType);
+}
+
+private void validateFileSize(MultipartFile file) {
+    long sizeMB = file.getSize() / (1024 * 1024);
+
+    if (file.getContentType().startsWith("image/") && sizeMB > 10) {
+        throw new FileSizeExceededException("Image too large (max 10MB)");
+    }
+
+    if (file.getContentType().startsWith("video/") && sizeMB > 200) {
+        throw new FileSizeExceededException("Video too large (max 200MB)");
+    }
+}
+
+private String cleanFileName(String name) {
+    if (name == null) return "file";
+
+    // Normalize name: remove spaces, unicode, repeated dots
+    name = name.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+
+    // Ensure extension exists
+    if (!name.contains(".")) name += ".dat";
+
+    return name;
+}
+
+
+public void deleteImage(String imagePath) {
+    try {
+        if (imagePath == null || imagePath.isBlank())
+            return;
+
+        String fullPath = System.getProperty("user.dir") + imagePath;
+        File file = new File(fullPath);
+
+        if (file.exists()) {
+            boolean deleted = file.delete();
+            if (!deleted) {
+                System.out.println("Failed to delete file: " + fullPath);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
+public Post postValidation(Long postId) {
+    Post post = postRepository.findById(postId)
+            .orElseThrow(() -> {
+                log.error("postId={} not found", postId);
+                throw new PostNotFoundException(postId);
+            });
+    log.info("Post With Id {} found", postId);
+    return post;
+}
 }
