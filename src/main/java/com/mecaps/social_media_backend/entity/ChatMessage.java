@@ -3,6 +3,8 @@ package com.mecaps.social_media_backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -22,9 +24,11 @@ public class ChatMessage {
     @CreationTimestamp
     @DateTimeFormat
     private LocalDateTime createdAt;
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToOne
     private User sender;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver;
 
 }

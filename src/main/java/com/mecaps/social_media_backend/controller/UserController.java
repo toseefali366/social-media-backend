@@ -46,7 +46,6 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(
             @CurrentUser CustomUserDetail currentUser) {
@@ -55,7 +54,6 @@ public class UserController {
                 userMapper.toUserResponse(currentUser.getUser())
         );
     }
-
 
     @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserResponse> updateMe(

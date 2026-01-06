@@ -3,6 +3,8 @@ package com.mecaps.social_media_backend.entity;
 import com.mecaps.social_media_backend.Enum.ContentType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Getter
@@ -19,5 +21,6 @@ public class PostContent {
     private ContentType contentType;
     private Long position;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 }   

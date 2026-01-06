@@ -63,7 +63,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus = AccountStatus.ACTIVE;
 
-
     private String profilePictureUrl;
 
     @CreationTimestamp
