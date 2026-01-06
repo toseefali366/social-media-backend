@@ -115,13 +115,15 @@ public void deleteImage(String imagePath) {
         e.printStackTrace();
     }
 }
-public Post postValidation(Long postId) {
-    Post post = postRepository.findById(postId)
-            .orElseThrow(() -> {
-                log.error("postId={} not found", postId);
-                throw new PostNotFoundException(postId);
-            });
-    log.info("Post With Id {} found", postId);
-    return post;
-}
+    public Post getPostById(Long postId) {
+
+        log.info("Fetching post with id: {}", postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    log.error("Post not found with id: {}", postId);
+                    return new PostNotFoundException("Post with id " + postId + " not found");
+                });
+        log.info("Post fetched successfully with id: {}", post.getId());
+        return post;
+    }
 }

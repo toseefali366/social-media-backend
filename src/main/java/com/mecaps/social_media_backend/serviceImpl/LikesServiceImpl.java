@@ -35,7 +35,7 @@ public class    LikesServiceImpl implements LikesService {
 
         User user = currentUser.getUser();
 
-        Post post = validation.postValidation(postId);
+        Post post = validation.getPostById(postId);
 
         Optional<Likes> existingLike = likesRepository.findByUser_idAndPost_id(user.getId(), post.getId());
 
@@ -62,7 +62,7 @@ public class    LikesServiceImpl implements LikesService {
     @Override
     public List<LikesResponse> getAllLikes(Long postId) {
 
-      Post post =  validation.postValidation(postId);
+      Post post =  validation.getPostById(postId);
 
         return likesRepository.findAllByPost_Id(postId)
                 .stream()
