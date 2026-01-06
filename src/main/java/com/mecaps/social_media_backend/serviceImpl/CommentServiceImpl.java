@@ -26,7 +26,7 @@ public class CommentServiceImpl implements CommentService {
     // fetch current user
         User user = currentUser.getUser();
     // get post
-        Post post = validation.getPostFromDb(commentRequest.getPostId());
+        Post post = validation.getPostById(commentRequest.getPostId());
 
         Comment comment = commentMapper.convertToComment(commentRequest,user,post);
 
@@ -37,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentResponse updateComment(Long commentId, CommentRequest commentRequest, CustomUserDetail currentUser) {
 
         // Fetch comment
-        Comment comment = validation.getCommentFromDb(commentId);
+        Comment comment = validation.getCommentById(commentId);
 
         // Check commentor
         if (!comment.getUser().getId().equals(currentUser.getUser().getId())) {
@@ -54,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Long commentId, CustomUserDetail currentUser) {
-        Comment comment = validation.getCommentFromDb(commentId);
+        Comment comment = validation.getCommentById(commentId);
 
         if (!comment.getUser().getId().equals(currentUser.getUser().getId())) {
             throw new RuntimeException("You are not allowed to delete this comment");
@@ -67,7 +67,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentResponse> getAllComment(Long id){
-Post post = validation.getPostFromDb(id);
+Post post = validation.getPostById(id);
 
 return commentRepository.findByPost_Id(id)
         .stream().map(commentMapper::toCommentResponse)
