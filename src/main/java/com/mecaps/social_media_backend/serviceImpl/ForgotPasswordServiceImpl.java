@@ -18,6 +18,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
 
+    @Override
     public void sendOtp(String identifier){
      User user = userRepository.findByEmailOrUserNameOrPhoneNumber(identifier,identifier,identifier)
              .orElseThrow(()-> new UserNotFoundException("User not found"));
@@ -26,6 +27,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
      emailService.sendOtpEmail(user.getEmail(), otp);
     }
 
+    @Override
     public void verifyOtp(String identifier, String otp){
         User user = userRepository.findByEmailOrUserNameOrPhoneNumber(identifier,identifier,identifier)
                 .orElseThrow(()-> new UserNotFoundException("User not found"));
@@ -35,6 +37,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         }
     }
 
+    @Override
     public void resetPassword(String identifier ,String newPassword){
         User user =  userRepository.findByEmailOrUserNameOrPhoneNumber(identifier,identifier,identifier)
                 .orElseThrow(()-> new UserNotFoundException("User not found"));

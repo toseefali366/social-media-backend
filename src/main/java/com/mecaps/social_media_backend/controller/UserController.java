@@ -1,8 +1,7 @@
 package com.mecaps.social_media_backend.controller;
 
-import com.mecaps.social_media_backend.entity.Post;
-import com.mecaps.social_media_backend.entity.User;
-import com.mecaps.social_media_backend.mapper.PostResponseMapper;
+
+
 import com.mecaps.social_media_backend.mapper.UserMapper;
 import com.mecaps.social_media_backend.request.ChangePasswordDTO;
 import com.mecaps.social_media_backend.request.UserRequest;

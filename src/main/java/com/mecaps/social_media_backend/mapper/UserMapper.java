@@ -3,6 +3,7 @@ package com.mecaps.social_media_backend.mapper;
 import com.mecaps.social_media_backend.entity.User;
 import com.mecaps.social_media_backend.request.UserRequest;
 import com.mecaps.social_media_backend.response.UserResponse;
+import com.mecaps.social_media_backend.response.UserSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,15 @@ public class UserMapper {
                 .profilePrivacy(user.getProfilePrivacy())
                 .profilePictureUrl(user.getProfilePictureUrl())
                 .coverPictureUrl(user.getCoverPictureUrl())
+                .build();
+    }
+
+    public static UserSummaryResponse toUserSummary(User user) {
+        if(user == null) return null;
+        return UserSummaryResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFirstName() + " " + user.getLastName())
+                .profileImageUrl(user.getProfilePictureUrl())
                 .build();
     }
 }

@@ -4,7 +4,6 @@ import com.mecaps.social_media_backend.entity.Post;
 import com.mecaps.social_media_backend.entity.PostContent;
 import com.mecaps.social_media_backend.response.PostContentResponse;
 import com.mecaps.social_media_backend.response.PostResponse;
-import com.mecaps.social_media_backend.response.UserSummaryResponse;
 
 import java.util.List;
 import java.util.function.Function;
@@ -20,16 +19,8 @@ public class PostResponseMapper {
                 .text(post.getText())
                 .postVisibility(post.getPostVisibility())
                 .createdAt(post.getCreatedAt())
-                .user(mapUser(post))
+                .user(UserMapper.toUserSummary(post.getUser()))
                 .content(mapContent(contents))
-                .build();
-    }
-
-    private static UserSummaryResponse mapUser(Post post) {
-        return UserSummaryResponse.builder()
-                .id(post.getUser().getId())
-                .profileImageUrl(post.getUser().getProfilePictureUrl())
-                .fullName(post.getUser().getFirstName() + " " + post.getUser().getLastName())
                 .build();
     }
 

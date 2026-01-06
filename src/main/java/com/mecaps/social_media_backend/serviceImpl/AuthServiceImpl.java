@@ -21,6 +21,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final LocationService locationService;
 
+    @Override
     public AuthResponse authenticateUser(AuthDTO request, HttpServletRequest httpRequest) {
 
         String identifier = request.getIdentifier();

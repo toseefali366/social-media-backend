@@ -5,7 +5,10 @@ import com.mecaps.social_media_backend.request.VerifyEmailOtpRequest;
 import com.mecaps.social_media_backend.service.EmailVerificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -14,11 +17,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EmailVerificationController {
 
-private final EmailVerificationService emailVerificationService;
+    private final EmailVerificationService emailVerificationService;
+
     /* SEND EMAIL OTP */
     @PostMapping("/send-email-otp")
     public ResponseEntity<?> sendOtp(
-             @RequestBody SendOtpRequest request) {
+            @RequestBody SendOtpRequest request) {
 
         emailVerificationService.sendEmailVerificationOtp(request.getEmail());
 

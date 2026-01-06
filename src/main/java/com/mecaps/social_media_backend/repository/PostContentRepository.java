@@ -1,6 +1,5 @@
 package com.mecaps.social_media_backend.repository;
 
-import com.mecaps.social_media_backend.entity.Post;
 import com.mecaps.social_media_backend.entity.PostContent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

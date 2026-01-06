@@ -1,5 +1,6 @@
 package com.mecaps.social_media_backend.controller;
 
+import com.mecaps.social_media_backend.request.LikeRequest;
 import com.mecaps.social_media_backend.response.LikesResponse;
 import com.mecaps.social_media_backend.security.CurrentUser;
 import com.mecaps.social_media_backend.security.CustomUserDetail;
@@ -11,21 +12,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("likes")
+@RequestMapping("post-likes")
 @RequiredArgsConstructor
 public class LikesController {
 
     private final LikesService likesService;
 
-    @PostMapping("/{postId}/like")
-    public ResponseEntity<String> likeOrUnlike(@CurrentUser CustomUserDetail currentUser
-            , @RequestBody Long postId){
+    @PostMapping("/like")
+    public ResponseEntity<String> likeOrUnlike(@CurrentUser CustomUserDetail currentUser,
+            @RequestBody LikeRequest postId){
 
         String response =likesService.likeOrUnlike(postId , currentUser);
         return ResponseEntity.ok(response);
 
     }
-    @GetMapping("/{postId}/likes")
+    @GetMapping("/like/{postId}")
     public ResponseEntity<List<LikesResponse>> getAllLikesOfPost(
             @PathVariable Long postId) {
 

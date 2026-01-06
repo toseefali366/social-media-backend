@@ -22,6 +22,7 @@ public class ProfileVisibilityServiceImpl implements ProfileVisibilityService {
     private final FriendRepository friendRepository;
     private final PostRepository postRepository;
 
+    @Override
     public boolean canViewProfile(User viewer, User profileOwner){
         //  Same user
         if(viewer.getId().equals(profileOwner.getId())){
@@ -42,6 +43,7 @@ public class ProfileVisibilityServiceImpl implements ProfileVisibilityService {
         return true;
     }
 
+    @Override
     public List<Post> getVisiblePosts(User viewer, User profileOwner){
         // Same user  everything
         if(viewer.getId().equals(profileOwner.getId())){

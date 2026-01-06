@@ -146,14 +146,10 @@ public class GlobalException {
                 request
         );
     }
-    @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<String> handlePostNotFound(PostNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-
 
     @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlePostNotFound(PostNotFoundException ex, HttpServletRequest request){
+    public ResponseEntity<ErrorResponse> handlePostNotFound(
+            PostNotFoundException ex, HttpServletRequest request){
         return buildErrorResponse(
                 ex,
                 HttpStatus.NOT_FOUND,
@@ -169,6 +165,17 @@ public class GlobalException {
                 ex,
                 HttpStatus.UNAUTHORIZED,
                 "UNAUTHORIZED USER",
+                request
+        );
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCommentNotFound(
+            CommentNotFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(
+                ex,
+                HttpStatus.NOT_FOUND,
+                "COMMENT_NOT_FOUND",
                 request
         );
     }

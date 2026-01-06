@@ -1,8 +1,10 @@
 package com.mecaps.social_media_backend.validations;
 
+import com.mecaps.social_media_backend.entity.Comment;
 import com.mecaps.social_media_backend.entity.Post;
 import com.mecaps.social_media_backend.entity.User;
 import com.mecaps.social_media_backend.exception.*;
+import com.mecaps.social_media_backend.repository.CommentRepository;
 import com.mecaps.social_media_backend.repository.PostRepository;
 import com.mecaps.social_media_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ public class Validation  {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-
+    private final CommentRepository commentRepository;
     private final String BASE_UPLOAD_PATH = System.getProperty("user.dir") + "/uploads/";
 
     public String saveImage(MultipartFile file, String folder) {
@@ -66,7 +68,10 @@ public class Validation  {
 private void validateFileType(MultipartFile file) {
     String contentType = file.getContentType();
 
-    if (contentType == null) throw new RuntimeException("Unknown file type");
+    if (contentType == null){
+        log.error("unknown file type");
+        throw new InvalidFileTypeException("Unknown file type");
+    }
 
     // Allow only images and videos
     if (contentType.startsWith("image/") || contentType.startsWith("video/")) {
@@ -80,10 +85,12 @@ private void validateFileSize(MultipartFile file) {
     long sizeMB = file.getSize() / (1024 * 1024);
 
     if (file.getContentType().startsWith("image/") && sizeMB > 10) {
+        log.error("Invalid image file size");
         throw new FileSizeExceededException("Image too large (max 10MB)");
     }
 
     if (file.getContentType().startsWith("video/") && sizeMB > 200) {
+        log.error("Invalid video file size");
         throw new FileSizeExceededException("Video too large (max 200MB)");
     }
 }
@@ -134,11 +141,22 @@ public void deleteImage(String imagePath) {
 
     public User getUserById(Long userId) {
         log.info("Fetching user with id: {}", userId);
-        User user = userRepository.findById(userId).orElseThrow(() -> {
-            log.error("User not found with id: {}", userId);
-            return new UserNotFoundException("User with id " + userId + " not found");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("User not found with id: {}", userId);
+                    return new UserNotFoundException("User with id " + userId + " not found");
         });
         log.info("User fetched successfully with id: {}", userId);
         return user;
+    }
+
+    public Comment getCommentById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> {
+                        log.error("Comment with id {} is not present", commentId);
+                        throw new CommentNotFoundException("Comment not found");
+                });
+        log.info("Comment fetched successfully with id: {}", comment.getId());
+        return comment;
     }
 }

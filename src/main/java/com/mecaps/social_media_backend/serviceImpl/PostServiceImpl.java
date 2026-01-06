@@ -58,6 +58,7 @@ public class PostServiceImpl implements PostService {
     public PostResponse updatePost(Long postId, PostRequest request, User user) {
         Post post = validation.getPostById(postId);
         if (!post.getUser().getId().equals(user.getId())) {
+            log.warn("You are not allowed to update a post");
             throw new UnAuthorizedException("You are not allowed to update post");
         }
         if(request.getText() != null) {
@@ -67,6 +68,7 @@ public class PostServiceImpl implements PostService {
             post.setPostVisibility(request.getPostVisibility());
         }
         if(request.getContents() != null && !request.getContents().isEmpty()) {
+            log.error("You are not allowed to update a image post or video post");
             throw new BadRequestException("Media cannot be updated");
         }
         return PostResponseMapper.toPostResponse(post, postContentRepository.findByPost_id(post.getId()));

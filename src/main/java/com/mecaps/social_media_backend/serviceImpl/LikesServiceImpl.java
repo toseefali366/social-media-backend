@@ -5,7 +5,7 @@ import com.mecaps.social_media_backend.entity.Post;
 import com.mecaps.social_media_backend.entity.User;
 import com.mecaps.social_media_backend.mapper.LikesMapper;
 import com.mecaps.social_media_backend.repository.LikesRepository;
-import com.mecaps.social_media_backend.repository.PostRepository;
+import com.mecaps.social_media_backend.request.LikeRequest;
 import com.mecaps.social_media_backend.response.LikesResponse;
 import com.mecaps.social_media_backend.security.CustomUserDetail;
 import com.mecaps.social_media_backend.service.LikesService;
@@ -24,18 +24,17 @@ import java.util.Optional;
 
 public class    LikesServiceImpl implements LikesService {
     private final LikesRepository likesRepository;
-    private final PostRepository postRepository;
     private final Validation validation;
     private final LikesMapper likesMapper;
 
     // private static final Logger logger = LoggerFactory.getLogger(LikesServiceImpl.class);
 
     @Override
-    public String likeOrUnlike(Long postId, CustomUserDetail currentUser) {
+    public String likeOrUnlike(LikeRequest postId, CustomUserDetail currentUser) {
 
         User user = currentUser.getUser();
 
-        Post post = validation.getPostById(postId);
+        Post post = validation.getPostById(postId.getId());
 
         Optional<Likes> existingLike = likesRepository.findByUser_idAndPost_id(user.getId(), post.getId());
 
