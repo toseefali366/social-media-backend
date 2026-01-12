@@ -1,9 +1,9 @@
 package com.mecaps.social_media_backend.Enum;
 
 public enum ContentType {
-    VIDEO,
+    TEXT,
     IMAGE,
-    AUDIO
-
-
+    VIDEO,
+    AUDIO,
+    DOCUMENT
 }

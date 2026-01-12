@@ -1,34 +1,28 @@
 package com.mecaps.social_media_backend.Entity;
 
-import com.mecaps.social_media_backend.Enum.Visiblity;
+import com.mecaps.social_media_backend.Enum.Visibility;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Post {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
-
-private Date createdAt;
-
-private String text;
-
-@Enumerated(EnumType.STRING)
-private Visiblity visiblity;
-
-@ManyToOne
-@OnDelete(action = OnDeleteAction.CASCADE)
-
-private User userId;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    private String text;
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility ;
+    @ManyToOne
+    private User user;
 }

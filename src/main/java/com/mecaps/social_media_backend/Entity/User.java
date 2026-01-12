@@ -2,64 +2,67 @@ package com.mecaps.social_media_backend.Entity;
 
 import com.mecaps.social_media_backend.Enum.Country;
 import com.mecaps.social_media_backend.Enum.Gender;
-import com.mecaps.social_media_backend.Enum.Privacy;
+import com.mecaps.social_media_backend.Enum.PrivacySetting;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long Id;
 
-private String bio;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-@Enumerated(EnumType.STRING)
-@Column(nullable = false)
-private Country country;
+    private String bio;
 
-private String coverPicUrl;
+    @Enumerated(EnumType.STRING)
+    private Country country;
 
-private LocalDate dateOfBirth;
+    private String coverPictureUrl;
 
-@Column(nullable = false,unique = true)
-private String email;
+    private LocalDate dob;
 
-@Column(nullable = false)
-private String firstName;
-@Column(nullable = false)
-private String lastName;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-@Column(nullable = false,unique = true)
-private String userName;
+    @Column(nullable = false)
+    private String firstName;
 
-@Enumerated(EnumType.STRING)
-private Gender gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
-@Column(nullable = false)
-    private boolean isVerified = false;
+    private Boolean isVerified = false;
+    
+    @Column(nullable = false)
+    private String lastName;
 
-private String location;
-@Column(nullable = false)
-private String password;
-@Column(nullable = false)
-private String phoneNumber;
+    private String location;
 
-@Enumerated(EnumType.STRING)
-private Privacy privacySetting;
+    @Column(nullable = false)
+    private String password;
 
-private String profilePicUrl;
+    @Column(unique = true)
+    private String phoneNumber;
 
-private LocalDateTime Signup;
+    @Enumerated(EnumType.STRING)
+    private PrivacySetting privacySetting;
 
+    private String profilePictureUrl;
 
+    @CreationTimestamp
+    private LocalDateTime signUpDate;
 
+    @Column(unique = true, nullable = false, name = "user_name")
+    private String userName;
 }

@@ -2,32 +2,27 @@ package com.mecaps.social_media_backend.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @CreationTimestamp
+    @DateTimeFormat
     private LocalDateTime createdAt;
-    @Column(nullable = false)
     private String text;
-
     @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-
-    private Post postId;
+    private User user;
     @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-
-    private User userId;
-
+    private Post post;
 }

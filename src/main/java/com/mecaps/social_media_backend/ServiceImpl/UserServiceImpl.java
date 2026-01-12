@@ -1,85 +1,170 @@
 package com.mecaps.social_media_backend.ServiceImpl;
 
 import com.mecaps.social_media_backend.Entity.User;
+import com.mecaps.social_media_backend.Exception.ConfirmPasswordDoesNotMatch;
+import com.mecaps.social_media_backend.Exception.PasswordDoesNotMatchException;
 import com.mecaps.social_media_backend.Exception.UserAlreadyExistException;
+import com.mecaps.social_media_backend.Exception.UserNotFoundException;
 import com.mecaps.social_media_backend.Mapper.UserMapper;
 import com.mecaps.social_media_backend.Repository.UserRepository;
+import com.mecaps.social_media_backend.Request.ChangePasswordDTO;
 import com.mecaps.social_media_backend.Request.UserRequest;
 import com.mecaps.social_media_backend.Response.UserResponse;
+import com.mecaps.social_media_backend.Security.CustomUserDetail;
 import com.mecaps.social_media_backend.Service.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.mecaps.social_media_backend.Validations.Validation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
-import java.io.File;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final Validation validation;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
+    public UserResponse createUser(UserRequest userRequest) {
+        String userName = userRequest.getUserName();
+        String email = userRequest.getEmail();
+        String PhoneNumber = userRequest.getPhoneNumber();
+        userRepository.findByEmailOrUserNameOrPhoneNumber(email, userName, PhoneNumber)
+                .ifPresent(user -> new UserAlreadyExistException("User is Already Exist"));
+
+        User user = userMapper.convertToUser(userRequest);
+
+        String profilePath = validation.saveImage(
+                userRequest.getProfilePictureUrl(), "profile");
+        String coverPath = validation.saveImage(
+                userRequest.getCoverPictureUrl(), "cover");
+
+        user.setProfilePictureUrl(profilePath);
+        user.setCoverPictureUrl(coverPath);
+
+        userRepository.save(user);
+
+        return userMapper.toUserResponse(user);
+    }
+
+
+    @Override
+    public UserResponse findUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return userMapper.toUserResponse(user);
+    }
+
+
+    @Override
+    public UserResponse updateCurrentUser(
+            CustomUserDetail currentUser,
+            UserRequest request) {
+
+        User user = currentUser.getUser();
+        if (user == null) {
+            throw new UserNotFoundException("Current user not found");
+        }
+
+        if (request.getBio() != null)
+            user.setBio(request.getBio());
+
+        if (request.getLocation() != null)
+            user.setLocation(request.getLocation());
+
+        if (request.getPhoneNumber() != null)
+            user.setPhoneNumber(request.getPhoneNumber());
+
+        if (request.getPrivacySetting() != null)
+            user.setPrivacySetting(request.getPrivacySetting());
+
+        if (request.getGender() != null)
+            user.setGender(request.getGender());
+
+        if (request.getCountry() != null)
+            user.setCountry(request.getCountry());
+
+        if (request.getDob() != null)
+            user.setDob(request.getDob());
+
+        if (request.getUserName() != null)
+            user.setUserName(request.getUserName());
+
+        if (request.getFirstName() != null)
+            user.setFirstName(request.getFirstName());
+
+        if (request.getLastName() != null)
+            user.setLastName(request.getLastName());
+
+        //  File uploads
+        if (request.getProfilePictureUrl() != null && !request.getProfilePictureUrl().isEmpty()) {
+            user.setProfilePictureUrl(
+                    validation.saveImage(request.getProfilePictureUrl(), "profile")
+            );
+        }
+
+        if (request.getCoverPictureUrl() != null && !request.getCoverPictureUrl().isEmpty()) {
+            user.setCoverPictureUrl(
+                    validation.saveImage(request.getCoverPictureUrl(), "cover")
+            );
+        }
+
+        userRepository.save(user);
+
+        return userMapper.toUserResponse(user);
     }
 
     @Override
+    public void deleteCurrentUser(CustomUserDetail currentUser) {
 
-    public ResponseEntity<?> createUser(UserRequest request) {
-        Optional<User> existingEmail = userRepository.findByEmail(request.getEmail());
-        Optional<User> existingPhone = userRepository.findByPhoneNumber(request.getPhoneNumber());
-        if(existingEmail.isPresent() && existingPhone.isPresent()){
-            throw new UserAlreadyExistException
-                    ("User With this Email or Phone Number Is Already Exist.");
+        User user = currentUser.getUser();
+        if (user == null) {
+            throw new UserNotFoundException("Current user not found");
         }
-        User user = userMapper.convertToUser(request);
-        String profilePath = saveImage(request.getProfilePicUrl(), "profile");
+        validation.deleteImage(user.getProfilePictureUrl());
+        validation.deleteImage(user.getCoverPictureUrl());
 
-        // Set path into entity
-        user.setProfilePicUrl(profilePath);
-        userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                Map.of(
-                        "message", "User created successfully.",
-
-                        "success", "true"
-                ));
+        userRepository.delete(user);
     }
 
-    private String saveImage(MultipartFile image , String folder) {
 
-        try {
-            if (image == null || image.isEmpty()) return null;
+    public List<UserResponse> searchByUserName(String keyword) {
 
-            // Use absolute path
-            String uploadDir = System.getProperty("user.dir") + "/uploads/" + folder + "/";
-            File dir = new File(uploadDir);
+        // checking if keyword is empty
 
-            if (!dir.exists() && !dir.mkdirs()) {
-                throw new RuntimeException("Failed to create directory: " + uploadDir);
-            }
-
-            // Avoid unsafe filenames
-            String original = image.getOriginalFilename().replaceAll("[^a-zA-Z0-9\\ .\\-]", "_");
-
-            String fileName = UUID.randomUUID() + "_" + original;
-            File destination = new File(uploadDir + fileName);
-
-            // Save file
-            image.transferTo(destination);
-
-            // Return relative path for frontend
-            return "/uploads/" + folder + "/" + fileName;
-
-        } catch (Exception e) {
-            e.printStackTrace(); // <-- So you can see exact root cause
-            throw new RuntimeException("Failed to upload image: " + e.getMessage());
+        if (keyword == null || keyword.isBlank()) {
+            throw new IllegalArgumentException("Username cannot be Empty");
         }
+        keyword = keyword.trim();
+
+        // here's we calling database then this will return the result from database
+
+        return userRepository
+                .findByUserNameStartsWithIgnoreCase(keyword)
+                .stream()
+                .map(userMapper::toUserResponse)
+                .toList();
+    }
+
+    public String updatePassword(CustomUserDetail customUserDetail, ChangePasswordDTO request) {
+        User user = customUserDetail.getUser();
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new PasswordDoesNotMatchException("Incorrect password");
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new ConfirmPasswordDoesNotMatch("New password and confirm password must match!");
+        }
+
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        return "Password has been changed successfully";
     }
 }
+
+
