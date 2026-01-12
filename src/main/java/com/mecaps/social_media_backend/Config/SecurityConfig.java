@@ -16,7 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class
+SecurityConfig {
 
     private final JwtAuthFilter jwtFilter;
 
@@ -33,10 +34,11 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/user/create",
+                                "/user/signup",
                                 "/auth/login",
                                 "/auth/logout",     //  ADD THIS
                                 "/redis-auth/**"
+
                         ).permitAll()
 
                                         //  Everything else requires JWT

@@ -1,5 +1,6 @@
 package com.mecaps.social_media_backend.Response;
 
+import com.mecaps.social_media_backend.Entity.User;
 import com.mecaps.social_media_backend.Enum.Country;
 import com.mecaps.social_media_backend.Enum.Gender;
 import com.mecaps.social_media_backend.Enum.PrivacySetting;
@@ -25,6 +26,6 @@ public class UserResponse {
     private PrivacySetting privacySetting;
     private String profilePictureUrl;
     private String coverPictureUrl;
-
-
 }
+
+

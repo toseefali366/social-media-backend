@@ -3,7 +3,7 @@ package com.mecaps.social_media_backend.ServiceImpl;
 import com.mecaps.social_media_backend.Entity.User;
 import com.mecaps.social_media_backend.Exception.ConfirmPasswordDoesNotMatch;
 import com.mecaps.social_media_backend.Exception.PasswordDoesNotMatchException;
-import com.mecaps.social_media_backend.Exception.UserAlreadyExistException;
+import com.mecaps.social_media_backend.Exception.UserAlreadyExistsException;
 import com.mecaps.social_media_backend.Exception.UserNotFoundException;
 import com.mecaps.social_media_backend.Mapper.UserMapper;
 import com.mecaps.social_media_backend.Repository.UserRepository;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         String email = userRequest.getEmail();
         String PhoneNumber = userRequest.getPhoneNumber();
         userRepository.findByEmailOrUserNameOrPhoneNumber(email, userName, PhoneNumber)
-                .ifPresent(user -> new UserAlreadyExistException("User is Already Exist"));
+                .ifPresent(user -> new UserAlreadyExistsException("User is Already Exist"));
 
         User user = userMapper.convertToUser(userRequest);
 
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
                 userRequest.getCoverPictureUrl(), "cover");
 
         user.setProfilePictureUrl(profilePath);
-        user.setCoverPictureUrl(coverPath);
+        user.setCoverPictureUrl       (coverPath);
 
         userRepository.save(user);
 

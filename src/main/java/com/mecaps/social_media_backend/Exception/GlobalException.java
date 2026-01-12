@@ -138,13 +138,23 @@ public class GlobalException {
 
     @ExceptionHandler(InvalidCredentials.class)
     public ResponseEntity<ErrorResponse> handleInvalidCredentials(
-            InvalidCredentials ex, HttpServletRequest request){
+            InvalidCredentials ex, HttpServletRequest request) {
         return buildErrorResponse(
                 ex,
                 HttpStatus.BAD_REQUEST,
                 "INVALID_CREDENTIALS",
                 request
         );
+    }
+        @ExceptionHandler(NoFriendRequestFound.class)
+                public ResponseEntity<ErrorResponse>NoFriendRequestFound(
+                        NoFriendRequestFound ex,HttpServletRequest request){
+
+            return buildErrorResponse(ex,
+            HttpStatus.BAD_REQUEST,
+            "NoFriendRequestFound",
+            request
+            );
     }
 
     /* ================= COMMON BUILDER ================= */
