@@ -5,18 +5,13 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
-
+@NoArgsConstructor
 public class LikesResponse {
-
     private Long id;
     private Long postId;
-    private Long userId;
-    private String userName;
-    private String firstName;
-    private String lastName;
-    private String profilePictureUrl;
+    private UserSummaryResponse user;
     private LocalDateTime likedAt;
-
 }

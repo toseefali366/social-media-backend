@@ -36,10 +36,11 @@ public class SecurityConfig {
                                 "/user/create",
                                 "/auth/login",
                                 "/auth/logout",     //  ADD THIS
-                                "/redis-auth/**"
+                                "/redis-auth/**",
+                                "/ws-chat/**"
                         ).permitAll()
 
-                                        //  Everything else requires JWT
+                        //  Everything else requires JWT
                         .anyRequest().authenticated()
                 )
 
@@ -59,6 +60,7 @@ public class SecurityConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
 
 }
 

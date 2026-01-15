@@ -34,6 +34,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (path.equals("/auth/logout")
                 || path.equals("/auth/login")
                 || path.startsWith("/redis-auth")
+                || path.startsWith("/ws-chat")
                 || path.equals("/user/create")
                 ) {
 

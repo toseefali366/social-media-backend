@@ -15,11 +15,7 @@ public class LikesMapper {
         return LikesResponse.builder()
                 .id(likes.getId())
                 .postId(likes.getPost().getId())
-                .userId(likes.getUser().getId())
-                .userName(likes.getUser().getUserName())
-                .firstName(likes.getUser().getFirstName())
-                .lastName(likes.getUser().getLastName())
-                .profilePictureUrl(likes.getUser().getProfilePictureUrl())
+                .user(UserMapper.toUserSummary(likes.getUser()))
                 .likedAt(likes.getLikedAt())
                 .build();
 
