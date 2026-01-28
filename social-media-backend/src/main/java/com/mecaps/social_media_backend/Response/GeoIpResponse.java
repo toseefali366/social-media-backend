@@ -7,4 +7,4 @@ public record GeoIpResponse(
         String city,
         Double lat,
         Double lon
-) {}
+){}

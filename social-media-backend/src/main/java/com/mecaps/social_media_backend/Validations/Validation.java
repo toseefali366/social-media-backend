@@ -1,9 +1,15 @@
 package com.mecaps.social_media_backend.Validations;
 
-import com.mecaps.social_media_backend.Exception.FileNotUploadException;
-import com.mecaps.social_media_backend.Exception.FileSizeExceededException;
-import com.mecaps.social_media_backend.Exception.FileStorageException;
-import com.mecaps.social_media_backend.Exception.InvalidFileTypeException;
+import com.mecaps.social_media_backend.Entity.Comment;
+import com.mecaps.social_media_backend.Entity.Post;
+import com.mecaps.social_media_backend.Entity.User;
+import com.mecaps.social_media_backend.Exception.*;
+import com.mecaps.social_media_backend.Repository.CommentRepository;
+import com.mecaps.social_media_backend.Repository.PostRepository;
+import com.mecaps.social_media_backend.Repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.boot.internal.Abstract;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,8 +18,13 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Component
+@AllArgsConstructor
+@Slf4j
 public class Validation  {
 
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 private final String BASE_UPLOAD_PATH = System.getProperty("user.dir") + "/uploads/";
 
 public String saveImage(MultipartFile file, String folder) {
@@ -111,4 +122,47 @@ public void deleteImage(String imagePath) {
         e.printStackTrace();
     }
 }
+
+    public Post getPostById(Long postId) {
+
+        log.info("Fetching post with id: {}", postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    log.error("Post not found with id: {}", postId);
+                    return new RuntimeException("Post with id " + postId + " not found");
+                });
+        log.info("Post fetched successfully with id: {}", post.getId());
+        return post;
+    }
+
+    public User getUserById(Long userId) {
+        log.info("Fetching user with id: {}", userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("User not found with id: {}", userId);
+                    return new UserNotFoundException("User with id " + userId + " not found");
+                });
+        log.info("User fetched successfully with id: {}", userId);
+        return user;
+    }
+
+    public Comment getCommentById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> {
+                    log.error("Comment with id {} is not present", commentId);
+                    throw new RuntimeException("Comment not found");
+                });
+        log.info("Comment fetched successfully with id: {}", comment.getId());
+        return comment;
+    }
+
+    public User getReceiverById(Long receiverId) {
+        User user = userRepository.findById(receiverId).orElseThrow(() -> {
+            log.error("Receiver with this id {} is not present", receiverId);
+            throw new UserNotFoundException("Recever not found");
+        });
+        log.info("User fetched successfully with id: {}", user.getId());
+        return user;
+    }
 }
+

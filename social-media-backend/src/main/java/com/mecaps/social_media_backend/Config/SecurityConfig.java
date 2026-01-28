@@ -36,7 +36,8 @@ public class SecurityConfig {
                                 "/user/signup",
                                 "/auth/login",
                                 "/auth/logout",     //  ADD THIS
-                                "/redis-auth/**"
+                                "/redis-auth/**",
+                                "/ws/**"
                         ).permitAll()
 
                                         //  Everything else requires JWT

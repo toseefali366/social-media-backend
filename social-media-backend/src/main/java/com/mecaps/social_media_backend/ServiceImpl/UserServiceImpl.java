@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            throw new ConfirmPasswordDoesNotMatch("New password and confirm password must match!");
+            throw new ConfirmPasswordDoesNotMatch(" New password and confirm password must match!");
         }
 
 

@@ -25,4 +25,9 @@ public class Post {
     private Visibility visibility ;
     @ManyToOne
     private User user;
+
+
+    @Builder.Default
+    private boolean isDeleted = false;
+
 }
