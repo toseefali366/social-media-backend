@@ -1,10 +1,12 @@
 package com.mecaps.social_media_backend.validations;
 
 import com.mecaps.social_media_backend.entity.Comment;
+import com.mecaps.social_media_backend.entity.Group;
 import com.mecaps.social_media_backend.entity.Post;
 import com.mecaps.social_media_backend.entity.User;
 import com.mecaps.social_media_backend.exception.*;
 import com.mecaps.social_media_backend.repository.CommentRepository;
+import com.mecaps.social_media_backend.repository.GroupRepository;
 import com.mecaps.social_media_backend.repository.PostRepository;
 import com.mecaps.social_media_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class Validation  {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final GroupRepository groupRepository;
     private final String BASE_UPLOAD_PATH = System.getProperty("user.dir") + "/uploads/";
 
     public String saveImage(MultipartFile file, String folder) {
@@ -150,6 +153,17 @@ public void deleteImage(String imagePath) {
         return user;
     }
 
+    public Group getGroupById(Long groupId){
+        log.info("Fetching group with id: {}",groupId);
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(()->{
+                    log.error("Group not found with id: {}",groupId);
+                    return new RuntimeException("Group with id " + groupId + "not found");
+                });
+        log.info("Group fetched successfully with id: {}",groupId);
+        return group;
+    }
+
     public Comment getCommentById(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> {
@@ -158,5 +172,14 @@ public void deleteImage(String imagePath) {
                 });
         log.info("Comment fetched successfully with id: {}", comment.getId());
         return comment;
+    }
+
+    public User getReceiverById(Long receiverId){
+        User user = userRepository.findById(receiverId).orElseThrow(()->{
+            log.error("Receiver with id {} is not present",receiverId);
+            throw new UserNotFoundException("Receiver not found");
+        });
+        log.info("Receiver fetched successfully with id: {}",user.getId());
+        return user;
     }
 }

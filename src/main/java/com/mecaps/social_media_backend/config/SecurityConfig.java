@@ -36,7 +36,9 @@ public class SecurityConfig {
                                 "/user/create",
                                 "/auth/login",
                                 "/auth/logout",     //  ADD THIS
-                                "/redis-auth/**"
+                                "/redis-auth/**",
+                                "/ws-chat/**",
+                                "/ws-groupChat/**"
                         ).permitAll()
 
                                         //  Everything else requires JWT
