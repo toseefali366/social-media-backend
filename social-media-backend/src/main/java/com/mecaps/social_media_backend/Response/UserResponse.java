@@ -1,9 +1,9 @@
-package com.mecaps.social_media_backend.response;
+package com.mecaps.social_media_backend.Response;
 
 import com.mecaps.social_media_backend.Entity.User;
 import com.mecaps.social_media_backend.Enum.Country;
 import com.mecaps.social_media_backend.Enum.Gender;
-import com.mecaps.social_media_backend.Enum.ProfilePrivacy;
+import com.mecaps.social_media_backend.Enum.PrivacySetting;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -23,9 +23,9 @@ public class UserResponse {
     private Country country;
     private Gender gender;
     private LocalDate dob;
-    private ProfilePrivacy profilePrivacy;
+    private PrivacySetting privacySetting;
     private String profilePictureUrl;
     private String coverPictureUrl;
+
+
 }
-
-

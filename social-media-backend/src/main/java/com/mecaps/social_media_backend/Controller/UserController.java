@@ -1,15 +1,12 @@
-package com.mecaps.social_media_backend.controller;
+package com.mecaps.social_media_backend.Controller;
 
-
-
-import com.mecaps.social_media_backend.mapper.UserMapper;
-import com.mecaps.social_media_backend.request.ChangePasswordDTO;
-import com.mecaps.social_media_backend.request.UserRequest;
-import com.mecaps.social_media_backend.response.UserResponse;
-import com.mecaps.social_media_backend.security.CurrentUser;
-import com.mecaps.social_media_backend.security.CustomUserDetail;
-import com.mecaps.social_media_backend.service.ProfileVisibilityService;
-import com.mecaps.social_media_backend.service.UserService;
+import com.mecaps.social_media_backend.Mapper.UserMapper;
+import com.mecaps.social_media_backend.Request.ChangePasswordDTO;
+import com.mecaps.social_media_backend.Request.UserRequest;
+import com.mecaps.social_media_backend.Response.UserResponse;
+import com.mecaps.social_media_backend.Security.CurrentUser;
+import com.mecaps.social_media_backend.Security.CustomUserDetail;
+import com.mecaps.social_media_backend.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +21,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final ProfileVisibilityService visibilityService;
 
     @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserResponse> createUser(
@@ -37,13 +33,14 @@ public class UserController {
                 .body(response);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findUserById(
-            @PathVariable Long id) {
+            @PathVariable("id") Long id) {
 
         UserResponse response = userService.findUserById(id);
         return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(
@@ -53,6 +50,7 @@ public class UserController {
                 userMapper.toUserResponse(currentUser.getUser())
         );
     }
+
 
     @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserResponse> updateMe(

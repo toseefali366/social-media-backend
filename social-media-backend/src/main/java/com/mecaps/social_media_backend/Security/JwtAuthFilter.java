@@ -1,6 +1,6 @@
-package com.mecaps.social_media_backend.security;
+package com.mecaps.social_media_backend.Security;
 
-import com.mecaps.social_media_backend.service.TokenBlackListService;
+import com.mecaps.social_media_backend.Service.TokenBlackListService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package com.mecaps.social_media_backend.exception;
+package com.mecaps.social_media_backend.Exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -155,39 +155,6 @@ public class GlobalException {
             "NoFriendRequestFound",
             request
             );
-    }
-
-    @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlePostNotFound(
-            PostNotFoundException ex, HttpServletRequest request){
-        return buildErrorResponse(
-                ex,
-                HttpStatus.NOT_FOUND,
-                "POST_NOT_FOUND",
-                request
-        );
-    }
-
-    @ExceptionHandler(UnAuthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleUnAuthorized(
-            UnAuthorizedException ex, HttpServletRequest request){
-        return buildErrorResponse(
-                ex,
-                HttpStatus.UNAUTHORIZED,
-                "UNAUTHORIZED USER",
-                request
-        );
-    }
-
-    @ExceptionHandler(CommentNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleCommentNotFound(
-            CommentNotFoundException ex, HttpServletRequest request) {
-        return buildErrorResponse(
-                ex,
-                HttpStatus.NOT_FOUND,
-                "COMMENT_NOT_FOUND",
-                request
-        );
     }
 
     /* ================= COMMON BUILDER ================= */

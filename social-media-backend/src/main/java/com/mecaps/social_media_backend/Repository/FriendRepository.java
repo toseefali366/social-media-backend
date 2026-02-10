@@ -21,20 +21,29 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     Optional<Friend> findBetween(Long u1, Long u2);
 
 
-    @Query("""
-        SELECT f FROM Friend f
-        WHERE f.receiver.id = :receiverId
-          AND f.status = :status
-    """)
 
-    List<Friend>findByReceiverAndStatus(Long Id, Status status);
+    List<Friend> findByReceiverIdAndStatus(Long receiverId, Status status);
 
-    @Query("""
-        SELECT f FROM Friend f
-        WHERE (f.sender.id = :userId OR f.receiver.id = :userId)
-          AND f.status = :status
-    """)
+    List<Friend> findBySenderOrReceiverAndStatus(
+            User sender,
+            User receiver,
+            Status status
+    );
 
-    List<Friend> findByUserAndStatus(User user, Status status);
 
+
+    //    @Query("""
+//        SELECT f FROM Friend f
+//        WHERE f.receiver.id = :receiverId
+//          AND f.status = :status
+//    """)
+
+//    List<Friend>findByReceiverAndStatus(Long Id, Status status);
+    //    @Query("""
+//        SELECT f FROM Friend f
+//        WHERE (f.sender.id = :userId OR f.receiver.id = :userId)
+//          AND f.status = :status
+//    """)
+//
+//    List<Friend> findByUserAndStatus(User user, Status status);
 }
