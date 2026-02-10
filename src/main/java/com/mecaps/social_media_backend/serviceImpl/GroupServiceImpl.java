@@ -36,7 +36,7 @@ public GroupResponse createGroup(GroupRequest groupRequest, CustomUserDetail cur
         GroupMember admin = groupMemberMapper.toGroupAdmin(group,creator);
         GroupMember saveMember = groupMemberRepository.save(admin);
 
-        return groupMapper.toResponse(saved);
+        return groupMapper.toGroupResponse(saved);
 
     }
 

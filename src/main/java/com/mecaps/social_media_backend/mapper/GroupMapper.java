@@ -20,7 +20,7 @@ public class GroupMapper {
                 .build();
     }
 
-    public GroupResponse toResponse(Group group){
+    public GroupResponse toGroupResponse(Group group){
         return GroupResponse.builder()
                 .id(group.getId())
                 .name(group.getName())

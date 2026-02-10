@@ -44,7 +44,7 @@ public class GroupMessageController {
             throw new IllegalArgumentException("message is null or empty");
         }
 
-        // ✅ GET USER FROM WEBSOCKET SESSION
+        // GET USER FROM WEBSOCKET
         User currentUser = (User) headerAccessor
                 .getSessionAttributes()
                 .get("currentUser");
