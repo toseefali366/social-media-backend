@@ -39,18 +39,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
         String destination = "/queue/"+receiver.getId();
         // Send Message To Receiver Only
-log.info("sending chatmessage to destination: {}"+destination);
+        log.info("sending chatmessage to destination: {}"+destination);
         simpMessagingTemplate.convertAndSend(
                 destination,
                 response
         );
-//        simpMessagingTemplate.convertAndSendToUser(
-//                receiver.getId().toString(),
-//                "/queue/messages",
-//                response
-//        );
-
-
-
     }
 }

@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(columnNames = {"userId", "postId"})
         }
 )
-
 @Getter
 @Setter
 @NoArgsConstructor

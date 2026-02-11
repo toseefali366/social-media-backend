@@ -37,7 +37,8 @@ public class SecurityConfig {
                                 "/auth/login",
                                 "/auth/logout",     //  ADD THIS
                                 "/redis-auth/**",
-                                "/ws-chat/**"
+                                "/ws-chat/**",
+                                "/ws-groupChat/**"
                         ).permitAll()
 
                         //  Everything else requires JWT
@@ -54,13 +55,9 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
-
 }
 
